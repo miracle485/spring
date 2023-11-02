@@ -11,8 +11,6 @@ public class MysqlBinlogApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(MysqlBinlogApplication.class, args);
-        BinlogService binlogService = new BinlogService();
-        binlogService.startListener();
     }
 
 }
