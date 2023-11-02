@@ -35,7 +35,6 @@ public class BinlogService {
         BinaryLogClient client = new BinaryLogClient("localhost", 3306, "root", "MySql2023!");
         client.setEventDeserializer(eventDeserializer);
         client.registerEventListener(listener);
-        loadTableNameFromDataBase("test");
 
         try {
             client.connect();
