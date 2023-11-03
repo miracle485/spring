@@ -1,5 +1,6 @@
 package com.example.mysqlbinlog.service;
 
+import com.example.mysqlbinlog.config.MySqlConfig;
 import com.example.mysqlbinlog.dao.InformationMapper;
 import com.example.mysqlbinlog.mode.TableColumInfo;
 import com.example.mysqlbinlog.service.listener.BinlogListener;
@@ -19,6 +20,9 @@ import java.util.stream.Collectors;
 public class BinlogService {
     @Resource
     private InformationMapper informationMapper;
+    @Resource
+    private MySqlConfig mySqlConfig;
+
     private BinaryLogClient client;
 
 
@@ -33,7 +37,7 @@ public class BinlogService {
 
     private void startListener(BinaryLogClient.EventListener listener) {
         EventDeserializer eventDeserializer = new EventDeserializer();
-        client = new BinaryLogClient("localhost", 3306, "root", "MySql2023!");
+        client = new BinaryLogClient(mySqlConfig.getHost(), mySqlConfig.getPort(), mySqlConfig.getUserName(), mySqlConfig.getPassword());
         client.setEventDeserializer(eventDeserializer);
         client.registerEventListener(listener);
 
