@@ -6,6 +6,12 @@ public class TableColumInfo {
     private int ordinalPosition;
     private String tableName;
 
+    public TableColumInfo tableNameToLower(){
+        setTableName(getTableName().toLowerCase());
+
+        return this;
+    }
+
     public String getColumnName() {
         return columnName;
     }

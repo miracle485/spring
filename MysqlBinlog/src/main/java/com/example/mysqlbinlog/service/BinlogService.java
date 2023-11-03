@@ -19,12 +19,13 @@ import java.util.stream.Collectors;
 public class BinlogService {
     @Resource
     private InformationMapper informationMapper;
+    private BinaryLogClient client;
 
 
     public void start() {
         List<String> databaseTable = loadTableNameFromDataBase("test");
         List<TableColumInfo> columns = loadTableColumnsFromDataBase(databaseTable);
-        Map<String, List<TableColumInfo>> columnNameMap = columns.stream().collect(Collectors.groupingBy(TableColumInfo::getTableName));
+        Map<String, List<TableColumInfo>> columnNameMap = columns.stream().map(TableColumInfo::tableNameToLower).collect(Collectors.groupingBy(TableColumInfo::getTableName));
         BinlogListener binlogListener = new BinlogListener(columnNameMap);
         startListener(binlogListener);
     }
@@ -32,7 +33,7 @@ public class BinlogService {
 
     private void startListener(BinaryLogClient.EventListener listener) {
         EventDeserializer eventDeserializer = new EventDeserializer();
-        BinaryLogClient client = new BinaryLogClient("localhost", 3306, "root", "MySql2023!");
+        client = new BinaryLogClient("localhost", 3306, "root", "MySql2023!");
         client.setEventDeserializer(eventDeserializer);
         client.registerEventListener(listener);
 
@@ -66,5 +67,9 @@ public class BinlogService {
         }
 
         return tableInfoByTableList;
+    }
+
+    public void disConnect() throws IOException {
+        client.disconnect();
     }
 }

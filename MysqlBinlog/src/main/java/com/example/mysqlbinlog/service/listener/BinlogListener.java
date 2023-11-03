@@ -2,10 +2,7 @@ package com.example.mysqlbinlog.service.listener;
 
 import com.example.mysqlbinlog.mode.TableColumInfo;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
-import com.github.shyiko.mysql.binlog.event.Event;
-import com.github.shyiko.mysql.binlog.event.EventType;
-import com.github.shyiko.mysql.binlog.event.TableMapEventData;
-import com.github.shyiko.mysql.binlog.event.WriteRowsEventData;
+import com.github.shyiko.mysql.binlog.event.*;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -46,6 +43,11 @@ public class BinlogListener implements BinaryLogClient.EventListener {
             WriteRowsEventData writeRowsEventData = event.getData();
             String tableName = MapUtils.getString(tableIdMap, writeRowsEventData.getTableId());
             System.out.println(tableName);
+        }
+        //获取修改数据的记录
+        if (EventType.isUpdate(eventType)) {
+            UpdateRowsEventData updateRowsEventData = event.getData();
+            System.out.println(gson.toJson(updateRowsEventData));
         }
 
     }

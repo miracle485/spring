@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 
 @Component
@@ -23,5 +24,13 @@ public class BinLogServiceStarter implements ApplicationListener<ApplicationRead
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         binlogService.start();
+    }
+
+    public void shutDownClient(){
+        try {
+            binlogService.disConnect();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
