@@ -35,11 +35,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.zendesk/mysql-binlog-connector-java -->
         <dependency>
-            <groupId>com.github.shyiko</groupId>
+            <groupId>com.zendesk</groupId>
             <artifactId>mysql-binlog-connector-java</artifactId>
-            <version>0.16.1</version>
+            <version>0.28.3</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
         <dependency>
             <groupId>com.mysql</groupId>

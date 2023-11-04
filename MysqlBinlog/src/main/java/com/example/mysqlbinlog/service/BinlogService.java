@@ -8,6 +8,8 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class BinlogService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BinlogService.class);
     @Resource
     private InformationMapper informationMapper;
     @Resource
@@ -27,7 +30,7 @@ public class BinlogService {
 
 
     public void start() {
-        List<String> databaseTable = loadTableNameFromDataBase("test");
+        List<String> databaseTable = loadTableNameFromDataBase("shici");
         List<TableColumInfo> columns = loadTableColumnsFromDataBase(databaseTable);
         Map<String, List<TableColumInfo>> columnNameMap = columns.stream().map(TableColumInfo::tableNameToLower).collect(Collectors.groupingBy(TableColumInfo::getTableName));
         BinlogListener binlogListener = new BinlogListener(columnNameMap);
@@ -41,10 +44,11 @@ public class BinlogService {
         client.setEventDeserializer(eventDeserializer);
         client.registerEventListener(listener);
 
+
         try {
             client.connect();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("error when connect server, error is ", e);
         } finally {
 
         }

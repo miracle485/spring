@@ -5,8 +5,9 @@ public class TableColumInfo {
     private String columnName;
     private int ordinalPosition;
     private String tableName;
+    private String dataType;
 
-    public TableColumInfo tableNameToLower(){
+    public TableColumInfo tableNameToLower() {
         setTableName(getTableName().toLowerCase());
 
         return this;
@@ -34,5 +35,13 @@ public class TableColumInfo {
 
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    public String getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
     }
 }
