@@ -2,7 +2,7 @@ package com.example.mysqlbinlog.service;
 
 import com.example.mysqlbinlog.config.MySqlConfig;
 import com.example.mysqlbinlog.dao.InformationMapper;
-import com.example.mysqlbinlog.mode.TableColumInfo;
+import com.example.mysqlbinlog.mode.TableColumnInfo;
 import com.example.mysqlbinlog.service.listener.BinlogListener;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
@@ -31,8 +31,8 @@ public class BinlogService {
 
     public void start() {
         List<String> databaseTable = loadTableNameFromDataBase("shici");
-        List<TableColumInfo> columns = loadTableColumnsFromDataBase(databaseTable);
-        Map<String, List<TableColumInfo>> columnNameMap = columns.stream().map(TableColumInfo::tableNameToLower).collect(Collectors.groupingBy(TableColumInfo::getTableName));
+        List<TableColumnInfo> columns = loadTableColumnsFromDataBase(databaseTable);
+        Map<String, List<TableColumnInfo>> columnNameMap = columns.stream().map(TableColumnInfo::tableNameToLower).collect(Collectors.groupingBy(TableColumnInfo::getTableName));
         BinlogListener binlogListener = new BinlogListener(columnNameMap);
         startListener(binlogListener);
     }
@@ -63,11 +63,11 @@ public class BinlogService {
         return tableListByDatabaseName;
     }
 
-    public List<TableColumInfo> loadTableColumnsFromDataBase(List<String> tableNameList) {
+    public List<TableColumnInfo> loadTableColumnsFromDataBase(List<String> tableNameList) {
         if (CollectionUtils.isEmpty(tableNameList)) {
             return Lists.newArrayList();
         }
-        List<TableColumInfo> tableInfoByTableList = informationMapper.getTableInfoByTableList(tableNameList);
+        List<TableColumnInfo> tableInfoByTableList = informationMapper.getTableInfoByTableList(tableNameList);
 
 
         if (CollectionUtils.isEmpty(tableInfoByTableList)) {

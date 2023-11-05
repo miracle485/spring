@@ -1,6 +1,6 @@
 package com.example.mysqlbinlog.service.listener;
 
-import com.example.mysqlbinlog.mode.TableColumInfo;
+import com.example.mysqlbinlog.mode.TableColumnInfo;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.DeleteRowsEventData;
 import com.github.shyiko.mysql.binlog.event.Event;
@@ -21,9 +21,9 @@ import java.util.stream.Collectors;
 public class BinlogListener implements BinaryLogClient.EventListener {
     private final Gson gson = new Gson();
     private Map<Long, String> tableIdMap;
-    private Map<String, List<TableColumInfo>> columnNameMap;
+    private Map<String, List<TableColumnInfo>> columnNameMap;
 
-    public BinlogListener(Map<String, List<TableColumInfo>> columnNameMap) {
+    public BinlogListener(Map<String, List<TableColumnInfo>> columnNameMap) {
         tableIdMap = Maps.newConcurrentMap();
         this.columnNameMap = columnNameMap;
     }
@@ -31,7 +31,6 @@ public class BinlogListener implements BinaryLogClient.EventListener {
     @Override
     public void onEvent(Event event) {
         EventType eventType = event.getHeader().getEventType();
-        System.out.println(event.getHeader().getTimestamp() + "     " + eventType);
         //记录tableid和表名的映射关系
         if (EventType.TABLE_MAP.equals(eventType)) {
             TableMapEventData eventData = event.getData();
@@ -44,11 +43,6 @@ public class BinlogListener implements BinaryLogClient.EventListener {
             WriteRowsEventData writeRowsEventData = event.getData();
             String tableName = MapUtils.getString(tableIdMap, writeRowsEventData.getTableId());
 
-            System.out.println(gson.toJson(writeRowsEventData));
-            for (Serializable[] row : writeRowsEventData.getRows()) {
-                System.out.println(new String((byte[]) row[3]));
-            }
-            System.out.println(tableName);
         }
         //获取修改数据的记录
         if (EventType.isUpdate(eventType)) {
@@ -57,20 +51,14 @@ public class BinlogListener implements BinaryLogClient.EventListener {
             // rows 每一个 Entry 是条记录,其中 Key 为修改前的记录，Value 为修改后的新的记录
             List<Map.Entry<Serializable[], Serializable[]>> rows = updateRowsEventData.getRows();
             // 获取修改后的新的值
-            List<Serializable[]> newValues = rows.stream().map(entry -> entry.getValue()).collect(Collectors.toList());
+            List<Serializable[]> newValues = rows.stream().map(Map.Entry::getValue).collect(Collectors.toList());
             // 获取修改前的值
-            List<Serializable[]> oldValues = rows.stream().map(entry -> entry.getKey()).collect(Collectors.toList());
-
-            for (Serializable[] newValue : newValues) {
-                System.out.println("newValue  "+gson.toJson(newValue));
-            }
-
-
+            List<Serializable[]> oldValues = rows.stream().map(Map.Entry::getKey).collect(Collectors.toList());
 
         }
 
         //获取删除数据的记录
-        if (EventType.isDelete(eventType)){
+        if (EventType.isDelete(eventType)) {
             DeleteRowsEventData data = event.getData();
             System.out.println(gson.toJson(data));
         }

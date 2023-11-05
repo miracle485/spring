@@ -1,6 +1,6 @@
 package com.example.mysqlbinlog.dao;
 
-import com.example.mysqlbinlog.mode.TableColumInfo;
+import com.example.mysqlbinlog.mode.TableColumnInfo;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
@@ -18,7 +18,7 @@ public interface InformationMapper {
             @Result(property = "tableName", column = "TABLE_NAME"),
             @Result(property = "DATA_TYPE", column = "dataType")
     })
-    List<TableColumInfo> getTableInfoByName(String tableName);
+    List<TableColumnInfo> getTableInfoByName(String tableName);
 
     @Select("select TABLE_NAME from information_schema.tables where table_schema = #{dataBaseName}")
     List<String> getTableListByDatabaseName(String dataBaseName);
@@ -34,5 +34,5 @@ public interface InformationMapper {
             @Result(property = "tableName", column = "TABLE_NAME"),
             @Result(property = "DATA_TYPE", column = "dataType")
     })
-    List<TableColumInfo> getTableInfoByTableList(List<String> tableNameList);
+    List<TableColumnInfo> getTableInfoByTableList(List<String> tableNameList);
 }

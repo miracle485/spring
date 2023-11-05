@@ -1,13 +1,13 @@
 package com.example.mysqlbinlog.mode;
 
-public class TableColumInfo {
+public class TableColumnInfo {
 
     private String columnName;
     private int ordinalPosition;
     private String tableName;
     private String dataType;
 
-    public TableColumInfo tableNameToLower() {
+    public TableColumnInfo tableNameToLower() {
         setTableName(getTableName().toLowerCase());
 
         return this;
