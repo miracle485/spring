@@ -1,7 +1,7 @@
 package com.example.mysqlbinlog.service;
 
-import com.example.mysqlbinlog.config.MySqlConfig;
-import com.example.mysqlbinlog.dao.InformationMapper;
+import com.example.mysqlbinlog.config.SourceMySqlConfig;
+import com.example.mysqlbinlog.dao.source.SourceDataMapper;
 import com.example.mysqlbinlog.model.TableColumInfo;
 import com.example.mysqlbinlog.service.listener.BinlogListener;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 public class BinlogService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BinlogService.class);
     @Resource
-    private InformationMapper informationMapper;
+    private SourceDataMapper informationMapper;
     @Resource
-    private MySqlConfig mySqlConfig;
+    private SourceMySqlConfig mySqlConfig;
 
     private BinaryLogClient client;
 

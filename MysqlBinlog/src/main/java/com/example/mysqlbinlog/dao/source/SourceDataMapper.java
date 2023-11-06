@@ -1,4 +1,4 @@
-package com.example.mysqlbinlog.dao;
+package com.example.mysqlbinlog.dao.source;
 
 import com.example.mysqlbinlog.model.TableColumInfo;
 import org.apache.ibatis.annotations.Result;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 读取information中关于表的配置信息
  */
-public interface InformationMapper {
+public interface SourceDataMapper {
     @Select("select COLUMN_NAME, ORDINAL_POSITION,TABLE_NAME,DATA_TYPE from information_schema.columns where table_name = #{tableName}")
     @Results({
             @Result(property = "columnName", column = "COLUMN_NAME"),

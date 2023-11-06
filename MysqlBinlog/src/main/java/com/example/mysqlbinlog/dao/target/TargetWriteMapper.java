@@ -1,4 +1,4 @@
-package com.example.mysqlbinlog.dao;
+package com.example.mysqlbinlog.dao.target;
 
 import org.apache.ibatis.annotations.Insert;
 
