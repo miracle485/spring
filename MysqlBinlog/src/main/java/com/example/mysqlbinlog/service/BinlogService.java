@@ -2,7 +2,7 @@ package com.example.mysqlbinlog.service;
 
 import com.example.mysqlbinlog.config.MySqlConfig;
 import com.example.mysqlbinlog.dao.InformationMapper;
-import com.example.mysqlbinlog.mode.TableColumInfo;
+import com.example.mysqlbinlog.model.TableColumInfo;
 import com.example.mysqlbinlog.service.listener.BinlogListener;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;

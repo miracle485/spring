@@ -1,4 +1,4 @@
-package com.example.mysqlbinlog.mode;
+package com.example.mysqlbinlog.model;
 
 public class TableColumInfo {
 

@@ -1,8 +1,6 @@
 package com.example.mysqlbinlog.service.listener;
 
-import com.example.mysqlbinlog.dao.TargetWriteMapper;
-import com.example.mysqlbinlog.mode.TableColumInfo;
-import com.example.mysqlbinlog.service.BeanUtilService;
+import com.example.mysqlbinlog.model.TableColumInfo;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import com.google.common.collect.Lists;
