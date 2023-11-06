@@ -1,6 +1,6 @@
 package com.example.mysqlbinlog.service.handler;
 
-import com.example.mysqlbinlog.mode.TableColumnInfo;
+import com.example.mysqlbinlog.model.TableColumnInfo;
 import com.example.mysqlbinlog.service.handler.ifac.EventHandler;
 import org.springframework.stereotype.Service;
 
