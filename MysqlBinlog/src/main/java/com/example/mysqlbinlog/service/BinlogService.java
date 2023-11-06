@@ -30,7 +30,7 @@ public class BinlogService {
 
 
     public void start() {
-        List<String> databaseTable = loadTableNameFromDataBase("shici");
+        List<String> databaseTable = loadTableNameFromDataBase("test");
         List<TableColumInfo> columns = loadTableColumnsFromDataBase(databaseTable);
         Map<String, List<TableColumInfo>> columnNameMap = columns.stream().map(TableColumInfo::tableNameToLower).collect(Collectors.groupingBy(TableColumInfo::getTableName));
         BinlogListener binlogListener = new BinlogListener(columnNameMap);
