@@ -1,14 +1,11 @@
 package com.example.mysqlbinlog.service.listener;
 
-import com.example.mysqlbinlog.mode.TableColumnInfo;
+import com.example.mysqlbinlog.model.TableColumnInfo;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
-import com.github.shyiko.mysql.binlog.event.DeleteRowsEventData;
-import com.github.shyiko.mysql.binlog.event.Event;
-import com.github.shyiko.mysql.binlog.event.EventType;
-import com.github.shyiko.mysql.binlog.event.TableMapEventData;
-import com.github.shyiko.mysql.binlog.event.UpdateRowsEventData;
-import com.github.shyiko.mysql.binlog.event.WriteRowsEventData;
+import com.github.shyiko.mysql.binlog.event.*;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,12 +13,14 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BinlogListener implements BinaryLogClient.EventListener {
     private final Gson gson = new Gson();
     private Map<Long, String> tableIdMap;
     private Map<String, List<TableColumnInfo>> columnNameMap;
+    private Set<String> originTableName = Sets.newHashSet("testtable");
 
     public BinlogListener(Map<String, List<TableColumnInfo>> columnNameMap) {
         tableIdMap = Maps.newConcurrentMap();
@@ -42,6 +41,11 @@ public class BinlogListener implements BinaryLogClient.EventListener {
         if (EventType.isWrite(eventType)) {
             WriteRowsEventData writeRowsEventData = event.getData();
             String tableName = MapUtils.getString(tableIdMap, writeRowsEventData.getTableId());
+            if (!originTableName.contains(tableName)) {
+                return;
+            }
+
+            System.out.println(gson.toJson(writeRowsEventData.getRows()));
 
         }
         //获取修改数据的记录
@@ -72,5 +76,15 @@ public class BinlogListener implements BinaryLogClient.EventListener {
         if (!MapUtils.getString(tableIdMap, tableId, StringUtils.EMPTY).equals(tableName)) {
             tableIdMap.put(tableId, tableName);
         }
+    }
+
+    private List<Serializable> transformToMap(List<Serializable> rows, List<TableColumnInfo> columInfos) {
+        List<Serializable> result = Lists.newArrayList();
+        for (Serializable row : rows) {
+            Serializable value = row instanceof byte[] ? String.valueOf(row) : row;
+            result.add(value);
+        }
+
+        return result;
     }
 }

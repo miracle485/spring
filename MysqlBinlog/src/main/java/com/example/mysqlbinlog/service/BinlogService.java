@@ -1,8 +1,8 @@
 package com.example.mysqlbinlog.service;
 
-import com.example.mysqlbinlog.config.MySqlConfig;
-import com.example.mysqlbinlog.dao.InformationMapper;
-import com.example.mysqlbinlog.mode.TableColumnInfo;
+import com.example.mysqlbinlog.config.SourceMySqlConfig;
+import com.example.mysqlbinlog.dao.source.SourceDataMapper;
+import com.example.mysqlbinlog.model.TableColumnInfo;
 import com.example.mysqlbinlog.service.listener.BinlogListener;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.deserialization.EventDeserializer;
@@ -22,15 +22,15 @@ import java.util.stream.Collectors;
 public class BinlogService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BinlogService.class);
     @Resource
-    private InformationMapper informationMapper;
+    private SourceDataMapper informationMapper;
     @Resource
-    private MySqlConfig mySqlConfig;
+    private SourceMySqlConfig mySqlConfig;
 
     private BinaryLogClient client;
 
 
     public void start() {
-        List<String> databaseTable = loadTableNameFromDataBase("shici");
+        List<String> databaseTable = loadTableNameFromDataBase("test");
         List<TableColumnInfo> columns = loadTableColumnsFromDataBase(databaseTable);
         Map<String, List<TableColumnInfo>> columnNameMap = columns.stream().map(TableColumnInfo::tableNameToLower).collect(Collectors.groupingBy(TableColumnInfo::getTableName));
         BinlogListener binlogListener = new BinlogListener(columnNameMap);

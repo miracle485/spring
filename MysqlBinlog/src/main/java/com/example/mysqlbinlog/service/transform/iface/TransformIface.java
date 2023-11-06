@@ -1,6 +1,6 @@
 package com.example.mysqlbinlog.service.transform.iface;
 
-import com.example.mysqlbinlog.mode.TableColumnInfo;
+import com.example.mysqlbinlog.model.TableColumnInfo;
 
 import java.io.Serializable;
 import java.util.List;

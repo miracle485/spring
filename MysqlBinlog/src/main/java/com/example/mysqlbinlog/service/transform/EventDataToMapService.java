@@ -1,6 +1,6 @@
 package com.example.mysqlbinlog.service.transform;
 
-import com.example.mysqlbinlog.mode.TableColumnInfo;
+import com.example.mysqlbinlog.model.TableColumnInfo;
 import com.example.mysqlbinlog.service.transform.iface.TransformIface;
 import com.google.common.collect.Maps;
 import org.springframework.stereotype.Service;

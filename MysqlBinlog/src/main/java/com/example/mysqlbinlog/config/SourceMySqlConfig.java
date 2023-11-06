@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Configuration
-public class MySqlConfig {
+public class SourceMySqlConfig {
     @Value("${spring.datasource.username}")
     private String userName;
     @Value("${spring.datasource.password}")
