@@ -1,5 +1,6 @@
 package com.example.mysqlbinlog.service;
 
+import com.example.mysqlbinlog.config.DataSyncTasks;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,9 @@ public class BinLogServiceStarter implements ApplicationListener<ApplicationRead
     @Resource
     private BinlogService binlogService;
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+
+    @Resource
+    private DataSyncTasks tasks;
 
 
     @Override

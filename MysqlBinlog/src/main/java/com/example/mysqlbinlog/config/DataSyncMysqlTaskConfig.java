@@ -1,6 +1,6 @@
 package com.example.mysqlbinlog.config;
 
-public class DataSyncMySqlTaskConfig {
+public class DataSyncMysqlTaskConfig {
     private String targetUrlWithPort;
     private String targetUserName;
     private String targetPassWord;

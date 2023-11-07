@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    username: root
+    password: MySql2023!
+    url: jdbc:mysql://localhost:3306/information_schema
+#mybatis:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+data-sync:
+  config:
+    target:
+      elasticSearchConfigList:
+        - host: localhost
+          port: 9200
+

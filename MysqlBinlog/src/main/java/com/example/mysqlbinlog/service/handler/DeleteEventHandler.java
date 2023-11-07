@@ -1,17 +1,16 @@
 package com.example.mysqlbinlog.service.handler;
 
 import com.example.mysqlbinlog.model.TableColumnInfo;
-import com.example.mysqlbinlog.service.handler.ifac.EventHandler;
+import com.example.mysqlbinlog.service.handler.iface.EventHandler;
+import com.github.shyiko.mysql.binlog.event.EventData;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
-@Service("update")
+@Service
 public class DeleteEventHandler implements EventHandler {
     @Override
-    public void handleEvent(List<Map.Entry<Serializable[], Serializable[]>> rows, List<TableColumnInfo> tableColumnInfos) {
+    public void handleEvent(EventData data, List<TableColumnInfo> tableColumnInfos) {
 
     }
 }

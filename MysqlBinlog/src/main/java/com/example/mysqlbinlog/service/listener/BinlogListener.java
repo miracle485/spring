@@ -1,20 +1,21 @@
 package com.example.mysqlbinlog.service.listener;
 
 import com.example.mysqlbinlog.model.TableColumnInfo;
+import com.example.mysqlbinlog.service.BeanUtilService;
+import com.example.mysqlbinlog.service.handler.DeleteEventHandler;
+import com.example.mysqlbinlog.service.handler.UpdateEventHandler;
+import com.example.mysqlbinlog.service.handler.WriteEventHandler;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BinlogListener implements BinaryLogClient.EventListener {
     private final Gson gson = new Gson();
@@ -41,30 +42,37 @@ public class BinlogListener implements BinaryLogClient.EventListener {
         if (EventType.isWrite(eventType)) {
             WriteRowsEventData writeRowsEventData = event.getData();
             String tableName = MapUtils.getString(tableIdMap, writeRowsEventData.getTableId());
+            //只获取源表的变化
             if (!originTableName.contains(tableName)) {
                 return;
             }
 
-            System.out.println(gson.toJson(writeRowsEventData.getRows()));
+            WriteEventHandler handler = BeanUtilService.getBean(WriteEventHandler.class);
+            handler.handleEvent(writeRowsEventData, MapUtils.getObject(columnNameMap, tableName));
 
         }
         //获取修改数据的记录
         if (EventType.isUpdate(eventType)) {
             UpdateRowsEventData updateRowsEventData = event.getData();
-
-            // rows 每一个 Entry 是条记录,其中 Key 为修改前的记录，Value 为修改后的新的记录
-            List<Map.Entry<Serializable[], Serializable[]>> rows = updateRowsEventData.getRows();
-            // 获取修改后的新的值
-            List<Serializable[]> newValues = rows.stream().map(Map.Entry::getValue).collect(Collectors.toList());
-            // 获取修改前的值
-            List<Serializable[]> oldValues = rows.stream().map(Map.Entry::getKey).collect(Collectors.toList());
-
+            String tableName = MapUtils.getString(tableIdMap, updateRowsEventData.getTableId());
+            //只获取源表的变化
+            if (!originTableName.contains(tableName)) {
+                return;
+            }
+            UpdateEventHandler handler = BeanUtilService.getBean(UpdateEventHandler.class);
+            handler.handleEvent(updateRowsEventData, MapUtils.getObject(columnNameMap, tableName));
         }
 
         //获取删除数据的记录
         if (EventType.isDelete(eventType)) {
             DeleteRowsEventData data = event.getData();
-            System.out.println(gson.toJson(data));
+            String tableName = MapUtils.getString(tableIdMap, data.getTableId());
+            //只获取源表的变化
+            if (!originTableName.contains(tableName)) {
+                return;
+            }
+            DeleteEventHandler handler = BeanUtilService.getBean(DeleteEventHandler.class);
+            handler.handleEvent(data, MapUtils.getObject(columnNameMap, tableName));
         }
 
     }

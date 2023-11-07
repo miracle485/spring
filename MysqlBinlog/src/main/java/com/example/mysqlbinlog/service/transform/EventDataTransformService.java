@@ -15,8 +15,8 @@ import java.util.Map;
 public class EventDataTransformService implements TransformIface {
 
     @Override
-    public Map<String, Object> transformToMap(Serializable[] values, List<TableColumnInfo> columnInfos) {
-        HashMap<String, Object> result = Maps.newHashMap();
+    public Map<String, Serializable> transformToMap(Serializable[] values, List<TableColumnInfo> columnInfos) {
+        HashMap<String, Serializable> result = Maps.newHashMap();
         for (TableColumnInfo columnInfo : columnInfos) {
             String columnName = columnInfo.getColumnName();
             int index = columnInfo.getOrdinalPosition();
