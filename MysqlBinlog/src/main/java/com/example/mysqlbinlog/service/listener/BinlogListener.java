@@ -78,13 +78,4 @@ public class BinlogListener implements BinaryLogClient.EventListener {
         }
     }
 
-    private List<Serializable> transformToMap(List<Serializable> rows, List<TableColumnInfo> columInfos) {
-        List<Serializable> result = Lists.newArrayList();
-        for (Serializable row : rows) {
-            Serializable value = row instanceof byte[] ? String.valueOf(row) : row;
-            result.add(value);
-        }
-
-        return result;
-    }
 }

@@ -3,7 +3,10 @@ package com.example.mysqlbinlog.manager;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
+import org.apache.http.message.BasicHeader;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -37,7 +40,7 @@ public class EsClientManager {
             return restHighLevelClientMap.get(key);
         }
         HttpHost http = new HttpHost(host, port, "http");
-        return new RestHighLevelClient(RestClient.builder(http));
+        return new RestHighLevelClient(RestClient.builder(http).setDefaultHeaders(getCompatibilityHeader()));
     }
 
     private String buildClientKey(String host, int port) {
@@ -62,6 +65,10 @@ public class EsClientManager {
         } catch (IOException e) {
             LOGGER.error("error when close es client, config is {}", key);
         }
+    }
+
+    private Header[] getCompatibilityHeader() {
+        return new Header[]{new BasicHeader(HttpHeaders.ACCEPT, "application/vnd.elasticsearch+json;compatible-with=7"), new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/vnd.elasticsearch+json;compatible-with=7")};
     }
 
 }

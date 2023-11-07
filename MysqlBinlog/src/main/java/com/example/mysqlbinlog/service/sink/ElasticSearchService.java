@@ -1,6 +1,7 @@
 package com.example.mysqlbinlog.service.sink;
 
 import com.example.mysqlbinlog.manager.EsClientManager;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +18,10 @@ public class ElasticSearchService {
     private EsClientManager esClientManager;
 
 
-    public boolean writeNewData(Map<String, Serializable> data, String host, int port) {
+    public boolean writeNewDataSingle(Map<String, Serializable> data, String host, int port) {
         RestHighLevelClient client = esClientManager.getClientByUrl(host, port);
 
+        IndexRequest indexRequest = new IndexRequest();
 
         return true;
     }

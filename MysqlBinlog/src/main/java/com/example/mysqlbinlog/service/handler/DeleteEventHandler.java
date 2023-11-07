@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service("update")
 public class DeleteEventHandler implements EventHandler {
     @Override
     public void handleEvent(List<Map.Entry<Serializable[], Serializable[]>> rows, List<TableColumnInfo> tableColumnInfos) {
