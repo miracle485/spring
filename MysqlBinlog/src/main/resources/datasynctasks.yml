@@ -1,0 +1,8 @@
+data-sync:
+  config:
+    target:
+      elasticSearchConfigList:
+        - host: localhost
+          port: 9200
+          indexName: testtable
+      mysqlTaskConfigList:

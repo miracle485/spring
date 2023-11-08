@@ -1,9 +1,9 @@
 package com.example.mysqlbinlog;
 
+import com.example.mysqlbinlog.config.DataSyncElasticSearchConfig;
 import com.example.mysqlbinlog.manager.EsClientManager;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.time.StopWatch;
-import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -29,12 +29,13 @@ import java.util.concurrent.TimeUnit;
 public class EsTests {
     @Resource
     private EsClientManager esClientManager;
+    private final DataSyncElasticSearchConfig config = new DataSyncElasticSearchConfig("localhost", 9200);
 
     private RequestOptions defaultOpt = RequestOptions.DEFAULT;
 
     @Test
     void testClient() throws IOException {
-        RestHighLevelClient client = esClientManager.getClientByUrl("localhost", 9200);
+        RestHighLevelClient client = esClientManager.getClientByUrl(config);
         IndexRequest indexRequest = new IndexRequest("testtable");
         Map<String, Object> source = Maps.newHashMap();
         indexRequest.source(source);
@@ -43,7 +44,7 @@ public class EsTests {
 
     @Test
     void testSearch() throws IOException {
-        RestHighLevelClient client = esClientManager.getClientByUrl("localhost", 9200);
+        RestHighLevelClient client = esClientManager.getClientByUrl(config);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         SearchRequest searchRequest = new SearchRequest("testtable");
@@ -59,7 +60,7 @@ public class EsTests {
 
     @Test
     void testAdd() throws IOException {
-        RestHighLevelClient client = esClientManager.getClientByUrl("localhost", 9200);
+        RestHighLevelClient client = esClientManager.getClientByUrl(config);
         IndexRequest indexRequest = new IndexRequest("testtable");
         Map<String, Serializable> source = new HashMap<>();
         source.put("id", 3);
@@ -72,7 +73,7 @@ public class EsTests {
 
     @Test
     void testUpdate() throws IOException {
-        RestHighLevelClient client = esClientManager.getClientByUrl("localhost", 9200);
+        RestHighLevelClient client = esClientManager.getClientByUrl(config);
         UpdateByQueryRequest update = new UpdateByQueryRequest("testtable");
         update.setQuery(new TermQueryBuilder("id", "1"));
 
@@ -83,7 +84,7 @@ public class EsTests {
 
     @Test
     void testDelete() throws IOException {
-        RestHighLevelClient client = esClientManager.getClientByUrl("localhost", 9200);
+        RestHighLevelClient client = esClientManager.getClientByUrl(config);
         DeleteByQueryRequest delete = new DeleteByQueryRequest("testtable");
         delete.setQuery(new MatchAllQueryBuilder());
         System.out.println(client.deleteByQuery(delete, defaultOpt));

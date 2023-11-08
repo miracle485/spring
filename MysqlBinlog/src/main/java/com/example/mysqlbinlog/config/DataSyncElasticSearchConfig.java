@@ -1,5 +1,6 @@
 package com.example.mysqlbinlog.config;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -13,6 +14,14 @@ public class DataSyncElasticSearchConfig implements Serializable {
     private String userName;
     private String password;
     private String indexName;
+
+    public DataSyncElasticSearchConfig() {
+    }
+
+    public DataSyncElasticSearchConfig(String host, int port) {
+        this.port = port;
+        this.host = host;
+    }
 
     public int getPort() {
         return port;
@@ -46,6 +55,14 @@ public class DataSyncElasticSearchConfig implements Serializable {
         this.password = password;
     }
 
+    public String getIndexName() {
+        return indexName;
+    }
+
+    public void setIndexName(String indexName) {
+        this.indexName = indexName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -60,5 +77,9 @@ public class DataSyncElasticSearchConfig implements Serializable {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(getPort()).append(getHost()).append(getUserName()).append(getPassword()).toHashCode();
+    }
+
+    public boolean isInValidConfig() {
+        return StringUtils.isEmpty(getHost()) || StringUtils.isEmpty(getIndexName()) || getPort() <= 0;
     }
 }

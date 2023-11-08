@@ -23,6 +23,8 @@ public class WriteEventHandler implements EventHandler {
     private EventDataTransformService dataTransformService;
     @Resource
     private ElasticSearchService elasticSearchService;
+    @Resource
+    private DataSyncTasks tasks;
 
 
     @Override
@@ -30,12 +32,12 @@ public class WriteEventHandler implements EventHandler {
         WriteRowsEventData writeRowsEventData = (WriteRowsEventData) data;
         List<Serializable[]> rows = writeRowsEventData.getRows();
         for (Serializable[] row : rows) {
-            if (ArrayUtils.isEmpty(row)){
+            if (ArrayUtils.isEmpty(row)) {
                 continue;
             }
             Map<String, Serializable> dataMap = dataTransformService.transformToMap(row, tableColumnInfos);
 
-            elasticSearchService.writeNewDataSingle(dataMap,"localhost",9200);
+
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.mysqlbinlog.service.sink;
 
+import com.example.mysqlbinlog.config.DataSyncElasticSearchConfig;
 import com.example.mysqlbinlog.manager.EsClientManager;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,11 +25,11 @@ public class ElasticSearchService {
     private final RequestOptions options = RequestOptions.DEFAULT;
 
 
-    public boolean writeNewDataSingle(Map<String, Serializable> data, String host, int port) {
-        if (MapUtils.isEmpty(data) || StringUtils.isEmpty(host) || port < 0) {
-            LOGGER.error("illegal param or config when write ES data is {},host is {},port is {}", data, host, port);
+    public boolean writeNewDataSingle(Map<String, Serializable> data, DataSyncElasticSearchConfig config) {
+        if (MapUtils.isEmpty(data) || StringUtils.isEmpty(config.getHost()) || config.getPort() < 0) {
+            LOGGER.error("illegal param or config when write ES data is {},host is {},port is {}", data, config.getHost(), config.getPort());
         }
-        RestHighLevelClient client = esClientManager.getClientByUrl(host, port);
+        RestHighLevelClient client = esClientManager.getClientByUrl(config);
 
         IndexRequest addRequest = new IndexRequest("testtable");
         addRequest.source(data);

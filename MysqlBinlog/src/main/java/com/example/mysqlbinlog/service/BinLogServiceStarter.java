@@ -21,6 +21,7 @@ public class BinLogServiceStarter implements ApplicationListener<ApplicationRead
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
+        tasks.removeInvalidConfig();
         EXECUTOR.submit(binlogService::start);
     }
 
