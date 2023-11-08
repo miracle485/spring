@@ -29,7 +29,7 @@ public class EventDataTransformService implements TransformIface {
     }
 
     @Override
-    public List<Serializable> transformToList(Serializable[] rows, List<TableColumnInfo> columInfos) {
+    public List<Serializable> transformToList(Serializable[] rows) {
         List<Serializable> result = Lists.newArrayList();
         for (Serializable row : rows) {
             Serializable value = row instanceof byte[] ? String.valueOf(row) : row;
@@ -38,5 +38,16 @@ public class EventDataTransformService implements TransformIface {
 
         return result;
     }
+
+    @Override
+    public Serializable[] transformDataTye(Serializable[] values) {
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] instanceof byte[]) {
+                values[i] = String.valueOf(values[i]);
+            }
+        }
+        return values;
+    }
+
 
 }

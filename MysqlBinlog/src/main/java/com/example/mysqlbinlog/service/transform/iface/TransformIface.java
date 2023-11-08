@@ -9,5 +9,10 @@ import java.util.Map;
 public interface TransformIface {
     Map<String, Serializable> transformToMap(Serializable[] values, List<TableColumnInfo> columnInfos);
 
-    List<Serializable> transformToList(Serializable[] values, List<TableColumnInfo> columnInfos);
+    List<Serializable> transformToList(Serializable[] values);
+
+    /**
+     * 对于text和blob类型的数据，会被解析为
+     */
+    Serializable[] transformDataTye(Serializable[] values);
 }

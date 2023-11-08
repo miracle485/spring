@@ -1,6 +1,8 @@
 package com.example.mysqlbinlog.service;
 
 import com.example.mysqlbinlog.config.DataSyncTasks;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,8 @@ import java.util.concurrent.Executors;
 
 @Component
 public class BinLogServiceStarter implements ApplicationListener<ApplicationReadyEvent> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BinLogServiceStarter.class);
+
     @Resource
     private BinlogService binlogService;
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
@@ -30,8 +34,10 @@ public class BinLogServiceStarter implements ApplicationListener<ApplicationRead
             binlogService.disConnect();
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }finally {
+        } finally {
             EXECUTOR.shutdown();
+            LOGGER.info("service executor has been shutdown");
+
         }
     }
 }

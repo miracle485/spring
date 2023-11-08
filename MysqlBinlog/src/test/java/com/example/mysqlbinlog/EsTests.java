@@ -4,6 +4,7 @@ import com.example.mysqlbinlog.config.DataSyncElasticSearchConfig;
 import com.example.mysqlbinlog.manager.EsClientManager;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.time.StopWatch;
+import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -35,7 +36,7 @@ public class EsTests {
 
     @Test
     void testClient() throws IOException {
-        RestHighLevelClient client = esClientManager.getClientByUrl(config);
+        RestHighLevelClient client = esClientManager.getClientByConfig(config);
         IndexRequest indexRequest = new IndexRequest("testtable");
         Map<String, Object> source = Maps.newHashMap();
         indexRequest.source(source);
@@ -44,7 +45,7 @@ public class EsTests {
 
     @Test
     void testSearch() throws IOException {
-        RestHighLevelClient client = esClientManager.getClientByUrl(config);
+        RestHighLevelClient client = esClientManager.getClientByConfig(config);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         SearchRequest searchRequest = new SearchRequest("testtable");
@@ -60,20 +61,31 @@ public class EsTests {
 
     @Test
     void testAdd() throws IOException {
-        RestHighLevelClient client = esClientManager.getClientByUrl(config);
-        IndexRequest indexRequest = new IndexRequest("testtable");
-        Map<String, Serializable> source = new HashMap<>();
-        source.put("id", 3);
-        source.put("msg", "msg");
+        RestHighLevelClient client = esClientManager.getClientByConfig(config);
+        BulkRequest bulkRequest=new BulkRequest("testtable");
+
+        IndexRequest indexRequest1 = new IndexRequest();
+        Map<String, Serializable> source1 = new HashMap<>();
+        source1.put("id", 1);
+        source1.put("msg", "msg");
+        Map<String, Serializable> source2 = new HashMap<>();
+        source2.put("id", 2);
+        source2.put("msg", "gsm");
 
 
-        indexRequest.source(source);
-        System.out.println(client.index(indexRequest, defaultOpt));
+        indexRequest1.source(source1);
+        bulkRequest.add(indexRequest1);
+        IndexRequest request2=new IndexRequest();
+        request2.source(source2);
+        bulkRequest.add(request2);
+
+
+        System.out.println(client.bulk(bulkRequest, defaultOpt));
     }
 
     @Test
     void testUpdate() throws IOException {
-        RestHighLevelClient client = esClientManager.getClientByUrl(config);
+        RestHighLevelClient client = esClientManager.getClientByConfig(config);
         UpdateByQueryRequest update = new UpdateByQueryRequest("testtable");
         update.setQuery(new TermQueryBuilder("id", "1"));
 
@@ -84,7 +96,7 @@ public class EsTests {
 
     @Test
     void testDelete() throws IOException {
-        RestHighLevelClient client = esClientManager.getClientByUrl(config);
+        RestHighLevelClient client = esClientManager.getClientByConfig(config);
         DeleteByQueryRequest delete = new DeleteByQueryRequest("testtable");
         delete.setQuery(new MatchAllQueryBuilder());
         System.out.println(client.deleteByQuery(delete, defaultOpt));

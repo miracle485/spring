@@ -79,5 +79,6 @@ public class BinlogService {
 
     public void disConnect() throws IOException {
         client.disconnect();
+        LOGGER.info("binlog client has bean shutdown");
     }
 }

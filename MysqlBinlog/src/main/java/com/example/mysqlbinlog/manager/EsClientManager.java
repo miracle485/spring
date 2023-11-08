@@ -4,10 +4,13 @@ import com.example.mysqlbinlog.config.DataSyncElasticSearchConfig;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.message.BasicHeader;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -23,7 +26,7 @@ public class EsClientManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(EsClientManager.class);
     private final Map<DataSyncElasticSearchConfig, RestHighLevelClient> restHighLevelClientMap = Maps.newConcurrentMap();
 
-    public RestHighLevelClient getClientByUrl(DataSyncElasticSearchConfig elasticSearchConfig) {
+    public RestHighLevelClient getClientByConfig(DataSyncElasticSearchConfig elasticSearchConfig) {
         if (elasticSearchConfig == null || StringUtils.isEmpty(elasticSearchConfig.getHost())) {
             return null;
         }
@@ -49,16 +52,22 @@ public class EsClientManager {
             credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(elasticSearchConfig.getUserName(), elasticSearchConfig.getPassword()));
             builder.setHttpClientConfigCallback(httpAsyncClientBuilder -> httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
         }
+        builder.setDefaultHeaders(getCompatibilityHeader());
 
         return new RestHighLevelClient(builder);
     }
 
     public void shutdownAll() {
         restHighLevelClientMap.forEach(this::shutdownWithKey);
+        LOGGER.info("es client has bean shutdown");
     }
 
-    public void shutdownByUrl(DataSyncElasticSearchConfig config) {
+    public void shutdownByConfig(DataSyncElasticSearchConfig config) {
         shutdownWithKey(config, restHighLevelClientMap.get(config));
+    }
+
+    private Header[] getCompatibilityHeader() {
+        return new Header[]{new BasicHeader(HttpHeaders.ACCEPT, "application/vnd.elasticsearch+json;compatible-with=7"), new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/vnd.elasticsearch+json;compatible-with=7")};
     }
 
     private void shutdownWithKey(DataSyncElasticSearchConfig key, RestHighLevelClient client) {
