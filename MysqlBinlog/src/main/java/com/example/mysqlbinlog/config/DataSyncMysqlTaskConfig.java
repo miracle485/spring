@@ -1,6 +1,8 @@
 package com.example.mysqlbinlog.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class DataSyncMysqlTaskConfig {
     private String targetJdbcUrl;
@@ -54,4 +56,19 @@ public class DataSyncMysqlTaskConfig {
                 || StringUtils.isEmpty(getTargetDataBaseName()) || StringUtils.isEmpty(getTargetUserName());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DataSyncMysqlTaskConfig that = (DataSyncMysqlTaskConfig) o;
+
+        return new EqualsBuilder().append(getTargetJdbcUrl(), that.getTargetJdbcUrl()).append(getTargetUserName(), that.getTargetUserName()).append(getTargetPassWord(), that.getTargetPassWord()).append(getTargetDataBaseName(), that.getTargetDataBaseName()).append(getTargetTableName(), that.getTargetTableName()).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(getTargetJdbcUrl()).append(getTargetUserName()).append(getTargetPassWord()).append(getTargetDataBaseName()).append(getTargetTableName()).toHashCode();
+    }
 }
