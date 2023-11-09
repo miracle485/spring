@@ -57,6 +57,17 @@ public class DataSyncMysqlTaskConfig {
     }
 
     @Override
+    public String toString() {
+        return "DataSyncMysqlTaskConfig{" +
+                "targetJdbcUrl='" + targetJdbcUrl + '\'' +
+                ", targetUserName='" + targetUserName + '\'' +
+                ", targetPassWord='" + targetPassWord + '\'' +
+                ", targetDataBaseName='" + targetDataBaseName + '\'' +
+                ", targetTableName='" + targetTableName + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
 

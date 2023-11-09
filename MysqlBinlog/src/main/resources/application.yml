@@ -1,11 +1,6 @@
-spring:
-  datasource:
-    username: root
-    password: MySql2023!
-    url: jdbc:mysql://localhost:3306/information_schema
-#mybatis:
-#  configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 data-sync:
   config:
@@ -15,4 +10,13 @@ data-sync:
           port: 9200
           indexName: testtable
       mysqlTaskConfigList:
+        - target-jdbc-url: jdbc:mysql://localhost:3306
+          target-user-name: root
+          target-data-base-name: test
+          target-pass-word: MySql2023!
+          target-table-name: testtable_1
+    source:
+      jdbc-url: jdbc:mysql://localhost:3306/test
+      username: root
+      password: MySql2023!
 

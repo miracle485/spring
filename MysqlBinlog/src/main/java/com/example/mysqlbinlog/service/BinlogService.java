@@ -2,6 +2,7 @@ package com.example.mysqlbinlog.service;
 
 import com.example.mysqlbinlog.config.SourceMySqlConfig;
 import com.example.mysqlbinlog.dao.source.SourceDataMapper;
+import com.example.mysqlbinlog.manager.DataSourceManager;
 import com.example.mysqlbinlog.model.TableColumnInfo;
 import com.example.mysqlbinlog.service.listener.BinlogListener;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
@@ -21,15 +22,18 @@ import java.util.stream.Collectors;
 @Service
 public class BinlogService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BinlogService.class);
-    @Resource
-    private SourceDataMapper informationMapper;
+    private SourceDataMapper sourceDataMapper;
     @Resource
     private SourceMySqlConfig mySqlConfig;
+    @Resource
+    private DataSourceManager dataSourceManager;
 
     private BinaryLogClient client;
 
 
     public void start() {
+        sourceDataMapper = dataSourceManager.getSourceMapper(mySqlConfig);
+
         List<String> databaseTable = loadTableNameFromDataBase("test");
         List<TableColumnInfo> columns = loadTableColumnsFromDataBase(databaseTable);
         Map<String, List<TableColumnInfo>> columnNameMap = columns.stream().map(TableColumnInfo::tableNameToLower).collect(Collectors.groupingBy(TableColumnInfo::getTableName));
@@ -55,7 +59,7 @@ public class BinlogService {
     }
 
     public List<String> loadTableNameFromDataBase(String dataBaseName) {
-        List<String> tableListByDatabaseName = informationMapper.getTableListByDatabaseName(dataBaseName);
+        List<String> tableListByDatabaseName = sourceDataMapper.getTableListByDatabaseName(dataBaseName);
         if (CollectionUtils.isEmpty(tableListByDatabaseName)) {
             return Lists.newArrayList();
         }
@@ -67,7 +71,7 @@ public class BinlogService {
         if (CollectionUtils.isEmpty(tableNameList)) {
             return Lists.newArrayList();
         }
-        List<TableColumnInfo> tableInfoByTableList = informationMapper.getTableInfoByTableList(tableNameList);
+        List<TableColumnInfo> tableInfoByTableList = sourceDataMapper.getTableInfoByTableList(tableNameList);
 
 
         if (CollectionUtils.isEmpty(tableInfoByTableList)) {
