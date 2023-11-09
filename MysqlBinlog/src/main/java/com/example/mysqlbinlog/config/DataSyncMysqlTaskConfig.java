@@ -1,38 +1,39 @@
 package com.example.mysqlbinlog.config;
 
+import com.example.mysqlbinlog.config.iface.DataSourceConfigIface;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class DataSyncMysqlTaskConfig {
-    private String targetJdbcUrl;
-    private String targetUserName;
-    private String targetPassWord;
+public class DataSyncMysqlTaskConfig implements DataSourceConfigIface {
+    private String jdbcUrl;
+    private String userName;
+    private String password;
     private String targetDataBaseName;
     private String targetTableName;
 
-    public String getTargetJdbcUrl() {
-        return targetJdbcUrl;
+    public String getJdbcUrl() {
+        return jdbcUrl;
     }
 
-    public void setTargetJdbcUrl(String targetJdbcUrl) {
-        this.targetJdbcUrl = targetJdbcUrl;
+    public void setJdbcUrl(String jdbcUrl) {
+        this.jdbcUrl = jdbcUrl;
     }
 
-    public String getTargetUserName() {
-        return targetUserName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setTargetUserName(String targetUserName) {
-        this.targetUserName = targetUserName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getTargetPassWord() {
-        return targetPassWord;
+    public String getPassword() {
+        return password;
     }
 
-    public void setTargetPassWord(String targetPassWord) {
-        this.targetPassWord = targetPassWord;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getTargetDataBaseName() {
@@ -52,16 +53,16 @@ public class DataSyncMysqlTaskConfig {
     }
 
     public boolean isInValidConfig() {
-        return StringUtils.isEmpty(getTargetJdbcUrl()) || StringUtils.isEmpty(getTargetTableName())
-                || StringUtils.isEmpty(getTargetDataBaseName()) || StringUtils.isEmpty(getTargetUserName());
+        return StringUtils.isEmpty(getJdbcUrl()) || StringUtils.isEmpty(getTargetTableName())
+                || StringUtils.isEmpty(getTargetDataBaseName()) || StringUtils.isEmpty(getUserName());
     }
 
     @Override
     public String toString() {
         return "DataSyncMysqlTaskConfig{" +
-                "targetJdbcUrl='" + targetJdbcUrl + '\'' +
-                ", targetUserName='" + targetUserName + '\'' +
-                ", targetPassWord='" + targetPassWord + '\'' +
+                "targetJdbcUrl='" + jdbcUrl + '\'' +
+                ", targetUserName='" + userName + '\'' +
+                ", targetPassWord='" + password + '\'' +
                 ", targetDataBaseName='" + targetDataBaseName + '\'' +
                 ", targetTableName='" + targetTableName + '\'' +
                 '}';
@@ -75,11 +76,11 @@ public class DataSyncMysqlTaskConfig {
 
         DataSyncMysqlTaskConfig that = (DataSyncMysqlTaskConfig) o;
 
-        return new EqualsBuilder().append(getTargetJdbcUrl(), that.getTargetJdbcUrl()).append(getTargetUserName(), that.getTargetUserName()).append(getTargetPassWord(), that.getTargetPassWord()).append(getTargetDataBaseName(), that.getTargetDataBaseName()).append(getTargetTableName(), that.getTargetTableName()).isEquals();
+        return new EqualsBuilder().append(getJdbcUrl(), that.getJdbcUrl()).append(getUserName(), that.getUserName()).append(getPassword(), that.getPassword()).append(getTargetDataBaseName(), that.getTargetDataBaseName()).append(getTargetTableName(), that.getTargetTableName()).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(getTargetJdbcUrl()).append(getTargetUserName()).append(getTargetPassWord()).append(getTargetDataBaseName()).append(getTargetTableName()).toHashCode();
+        return new HashCodeBuilder(17, 37).append(getJdbcUrl()).append(getUserName()).append(getPassword()).append(getTargetDataBaseName()).append(getTargetTableName()).toHashCode();
     }
 }

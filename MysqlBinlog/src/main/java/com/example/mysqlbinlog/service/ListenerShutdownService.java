@@ -1,5 +1,6 @@
 package com.example.mysqlbinlog.service;
 
+import com.example.mysqlbinlog.manager.DataSourceManager;
 import com.example.mysqlbinlog.manager.EsClientManager;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
@@ -13,9 +14,12 @@ public class ListenerShutdownService implements ApplicationListener<ContextClose
     private BinLogServiceStarter binLogServiceStarter;
     @Resource
     private EsClientManager esClientManager;
+    @Resource
+    private DataSourceManager dataSourceManager;
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         binLogServiceStarter.shutDownClient();
         esClientManager.shutdownAll();
+        dataSourceManager.shutDownAll();
     }
 }

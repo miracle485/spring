@@ -2,9 +2,11 @@ package com.example.mysqlbinlog.manager;
 
 import com.example.mysqlbinlog.config.DataSyncMysqlTaskConfig;
 import com.example.mysqlbinlog.config.SourceMySqlConfig;
+import com.example.mysqlbinlog.config.iface.DataSourceConfigIface;
 import com.example.mysqlbinlog.dao.source.SourceDataMapper;
 import com.example.mysqlbinlog.dao.target.TargetWriteMapper;
 import com.google.common.collect.Maps;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.binding.MapperRegistry;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -12,10 +14,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
 import java.util.Map;
 
 @Service
@@ -23,10 +23,10 @@ public class DataSourceManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceManager.class);
 
     private final Map<DataSyncMysqlTaskConfig, TargetWriteMapper> mapperMap = Maps.newConcurrentMap();
-    private final Map<DataSyncMysqlTaskConfig, SqlSession> sqlSessionMap = Maps.newConcurrentMap();
+    private final Map<DataSourceConfigIface, SqlSession> sqlSessionMap = Maps.newConcurrentMap();
+    private final Map<DataSourceConfigIface, HikariDataSource> dataSourceMap = Maps.newConcurrentMap();
 
     private volatile SourceDataMapper sourceDataMapper;
-    private SqlSession sourceSqlSession;
 
 
     /**
@@ -66,40 +66,19 @@ public class DataSourceManager {
             if (sourceDataMapper != null) {
                 return sourceDataMapper;
             }
-            DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-            dataSourceBuilder.url(sourceMySqlConfig.getJdbcUrl());
-            dataSourceBuilder.password(sourceMySqlConfig.getPassword());
-            dataSourceBuilder.username(sourceMySqlConfig.getUserName());
 
-            SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-            sqlSessionFactoryBean.setDataSource(dataSourceBuilder.build());
-            SqlSessionFactory sqlSessionFactory;
-            try {
-                sqlSessionFactory = sqlSessionFactoryBean.getObject();
-            } catch (Exception e) {
-                LOGGER.error("error when create SqlSessionFactory mapper will be null,error is ", e);
-                return null;
-            }
-            Configuration configuration = sqlSessionFactory.getConfiguration();
-            //注册mapper信息
-            MapperRegistry registry = new MapperRegistry(configuration);
-            registry.addMapper(SourceDataMapper.class);
-            //开启数据库session
-            sourceSqlSession = sqlSessionFactory.openSession();
-
-            //创建mapper的代理
-            sourceDataMapper = registry.getMapper(SourceDataMapper.class, sourceSqlSession);
+            sourceDataMapper = createTargetMapper(sourceMySqlConfig, SourceDataMapper.class);
 
             return sourceDataMapper;
         }
     }
 
 
-    private <T> T createTargetMapper(DataSyncMysqlTaskConfig config, Class<T> tClass) {
-        DataSource build = createDataSource(config);
+    private <T> T createTargetMapper(DataSourceConfigIface config, Class<T> tClass) {
+        HikariDataSource dataSource = createDataSource(config);
 
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        sqlSessionFactoryBean.setDataSource(build);
+        sqlSessionFactoryBean.setDataSource(dataSource);
         SqlSessionFactory sqlSessionFactory;
         try {
             sqlSessionFactory = sqlSessionFactoryBean.getObject();
@@ -118,18 +97,19 @@ public class DataSourceManager {
         T mapper = registry.getMapper(tClass, sqlSession);
 
         sqlSessionMap.put(config, sqlSession);
+        dataSourceMap.put(config, dataSource);
 
         return mapper;
     }
 
-    private DataSource createDataSource(DataSyncMysqlTaskConfig config) {
+    private HikariDataSource createDataSource(DataSourceConfigIface config) {
         //添加配置信息
-        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.url(config.getTargetJdbcUrl());
-        dataSourceBuilder.password(config.getTargetPassWord());
-        dataSourceBuilder.username(config.getTargetUserName());
+        HikariDataSource hikariDataSource = new HikariDataSource();
+        hikariDataSource.setUsername(config.getUserName());
+        hikariDataSource.setJdbcUrl(config.getJdbcUrl());
+        hikariDataSource.setPassword(config.getPassword());
 
-        return dataSourceBuilder.build();
+        return hikariDataSource;
     }
 
     /**
@@ -139,7 +119,8 @@ public class DataSourceManager {
         for (SqlSession value : sqlSessionMap.values()) {
             value.close();
         }
-
-        sourceSqlSession.close();
+        for (HikariDataSource value : dataSourceMap.values()) {
+            value.close();
+        }
     }
 }

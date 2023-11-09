@@ -5,16 +5,21 @@ mybatis:
 data-sync:
   config:
     target:
-      elasticSearchConfigList:
-        - host: localhost
-          port: 9200
-          indexName: testtable
+#      elasticSearchConfigList:
+#        - host: localhost
+#          port: 9200
+#          indexName: testtable
       mysqlTaskConfigList:
-        - target-jdbc-url: jdbc:mysql://localhost:3306
-          target-user-name: root
+        - jdbc-url: jdbc:mysql://localhost:3306
+          user-name: root
           target-data-base-name: test
-          target-pass-word: MySql2023!
+          password: MySql2023!
           target-table-name: testtable_1
+        - jdbc-url: jdbc:mysql://localhost:3306
+          user-name: root
+          target-data-base-name: test
+          password: MySql2023!
+          target-table-name: testtable_2
     source:
       jdbc-url: jdbc:mysql://localhost:3306/test
       username: root

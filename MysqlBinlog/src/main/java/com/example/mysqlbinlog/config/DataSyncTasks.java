@@ -1,8 +1,8 @@
 package com.example.mysqlbinlog.config;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,8 +11,8 @@ import java.util.List;
 //@PropertySource("classpath:datasynctasks.yml")
 @ConfigurationProperties(prefix = "data-sync.config.target")
 public class DataSyncTasks {
-    private List<DataSyncElasticSearchConfig> elasticSearchConfigList;
-    private List<DataSyncMysqlTaskConfig> mysqlTaskConfigList;
+    private List<DataSyncElasticSearchConfig> elasticSearchConfigList = Lists.newArrayList();
+    private List<DataSyncMysqlTaskConfig> mysqlTaskConfigList = Lists.newArrayList();
 
     public List<DataSyncElasticSearchConfig> getElasticSearchConfigList() {
         return elasticSearchConfigList;

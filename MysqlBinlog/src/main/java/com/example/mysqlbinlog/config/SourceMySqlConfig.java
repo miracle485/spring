@@ -1,5 +1,6 @@
 package com.example.mysqlbinlog.config;
 
+import com.example.mysqlbinlog.config.iface.DataSourceConfigIface;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,7 +13,7 @@ import java.util.regex.Pattern;
 
 @Component
 @ConfigurationProperties(prefix = "data-sync.config.source")
-public class SourceMySqlConfig {
+public class SourceMySqlConfig implements DataSourceConfigIface {
 
     private String userName;
 
