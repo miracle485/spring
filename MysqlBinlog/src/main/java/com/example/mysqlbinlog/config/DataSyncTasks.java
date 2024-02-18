@@ -1,14 +1,16 @@
 package com.example.mysqlbinlog.config;
 
+import com.example.mysqlbinlog.config.factory.YamlFactory;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-//@PropertySource("classpath:datasynctasks.yml")
+@PropertySource(factory = YamlFactory.class, value = "classpath:datasynctasks.yml")
 @ConfigurationProperties(prefix = "data-sync.config.target")
 public class DataSyncTasks {
     private List<DataSyncElasticSearchConfig> elasticSearchConfigList = Lists.newArrayList();

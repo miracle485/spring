@@ -5,6 +5,7 @@ import com.example.mysqlbinlog.service.BeanUtilService;
 import com.example.mysqlbinlog.service.handler.DeleteEventHandler;
 import com.example.mysqlbinlog.service.handler.UpdateEventHandler;
 import com.example.mysqlbinlog.service.handler.WriteEventHandler;
+import com.example.mysqlbinlog.service.handler.iface.EventHandler;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 import com.github.shyiko.mysql.binlog.event.*;
 import com.google.common.collect.Maps;
@@ -12,16 +13,21 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Handler;
 
 public class BinlogListener implements BinaryLogClient.EventListener {
     private final Gson gson = new Gson();
     private Map<Long, String> tableIdMap;
     private Map<String, List<TableColumnInfo>> columnNameMap;
     private Set<String> originTableName = Sets.newHashSet("testtable");
+
+    private List<EventHandler> eventHandlerList = BeanUtilService.getBeanList(EventHandler.class);
 
     public BinlogListener(Map<String, List<TableColumnInfo>> columnNameMap) {
         tableIdMap = Maps.newConcurrentMap();
@@ -31,6 +37,9 @@ public class BinlogListener implements BinaryLogClient.EventListener {
     @Override
     public void onEvent(Event event) {
         EventType eventType = event.getHeader().getEventType();
+
+
+        System.out.println(eventHandlerList);
         //记录tableid和表名的映射关系
         if (EventType.TABLE_MAP.equals(eventType)) {
             TableMapEventData eventData = event.getData();

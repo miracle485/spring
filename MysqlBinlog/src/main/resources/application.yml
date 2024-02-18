@@ -5,10 +5,10 @@ mybatis:
 data-sync:
   config:
     target:
-#      elasticSearchConfigList:
-#        - host: localhost
-#          port: 9200
-#          indexName: testtable
+      elasticSearchConfigList:
+        - host: localhost
+          port: 9200
+          indexName: testtable
       mysqlTaskConfigList:
         - jdbc-url: jdbc:mysql://localhost:3306
           user-name: root

@@ -5,10 +5,12 @@ import com.example.mysqlbinlog.config.DataSyncMysqlTaskConfig;
 import com.example.mysqlbinlog.config.DataSyncTasks;
 import com.example.mysqlbinlog.model.TableColumnInfo;
 import com.example.mysqlbinlog.service.handler.iface.EventHandler;
-import com.example.mysqlbinlog.service.sink.ElasticSearchService;
 import com.example.mysqlbinlog.service.sink.DataSourceService;
+import com.example.mysqlbinlog.service.sink.ElasticSearchService;
 import com.example.mysqlbinlog.service.transform.EventDataTransformService;
+import com.github.shyiko.mysql.binlog.event.Event;
 import com.github.shyiko.mysql.binlog.event.EventData;
+import com.github.shyiko.mysql.binlog.event.EventType;
 import com.github.shyiko.mysql.binlog.event.WriteRowsEventData;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.MapUtils;
@@ -33,6 +35,14 @@ public class WriteEventHandler implements EventHandler {
 
 
     @Override
+    public void checkTypeAndHandleEvent(Event event, List<TableColumnInfo> tableColumnInfos) {
+        if (!EventType.isWrite(event.getHeader().getEventType())) {
+            return;
+        }
+        handleEvent(event.getData(), tableColumnInfos);
+    }
+
+
     public void handleEvent(EventData data, List<TableColumnInfo> tableColumnInfos) {
         WriteRowsEventData writeRowsEventData = (WriteRowsEventData) data;
         List<Serializable[]> rows = writeRowsEventData.getRows();

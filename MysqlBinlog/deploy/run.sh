@@ -1,7 +1,5 @@
+function run() {
 
-
-function test() {
-    mvn clean package -DskipTests
 }
 
-test
+run

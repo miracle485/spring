@@ -6,3 +6,17 @@ data-sync:
           port: 9200
           indexName: testtable
       mysqlTaskConfigList:
+        - jdbc-url: jdbc:mysql://localhost:3306
+          user-name: root
+          target-data-base-name: test
+          password: MySql2023!
+          target-table-name: testtable_1
+        - jdbc-url: jdbc:mysql://localhost:3306
+          user-name: root
+          target-data-base-name: test
+          password: MySql2023!
+          target-table-name: testtable_2
+    source:
+      jdbc-url: jdbc:mysql://localhost:3306/test
+      username: root
+      password: MySql2023!

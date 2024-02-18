@@ -1,11 +1,13 @@
 package com.example.mysqlbinlog.service;
 
+import com.google.common.collect.Lists;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -25,7 +27,10 @@ public class BeanUtilService implements ApplicationContextAware {
         return APPLICATION_CONTEXT.getBean(classz);
     }
 
-    public static <T> Map<String, T> getBeanList(Class<T> classz) {
-        return  APPLICATION_CONTEXT.getBeansOfType(classz);
+    public static <T> List<T> getBeanList(Class<T> classz) {
+        Map<String, T> beansOfType = APPLICATION_CONTEXT.getBeansOfType(classz);
+        return Lists.newArrayList(beansOfType.values());
     }
+
+
 }
